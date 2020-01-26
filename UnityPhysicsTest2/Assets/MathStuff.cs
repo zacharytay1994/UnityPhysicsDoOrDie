@@ -58,6 +58,49 @@ public class MathStuff
         temp.z_ = new Vector3(qxqz2 + qyqw2, qyqz2 - qxqw2, 1.0f - qxqx2 - qyqy2);
         return temp;
     }
+
+    public static float Invert(float f)
+    {
+        return f != 0.0f ? 1.0f / f : 0.0f;
+    }
+
+    public static Quaternion AngularVelocityToQuarternion(Vector3 av, Quaternion old)
+    {
+        Quaternion q = new Quaternion(av.x * Time.deltaTime, av.y * Time.deltaTime, av.z * Time.deltaTime, 0.0f);
+        q *= old;
+        old.x += q.x * 0.5f;
+        old.y += q.y * 0.5f;
+        old.z += q.z * 0.5f;
+        old.w += q.w * 0.5f;
+
+        return NormalizeQuaternion(old);
+    }
+
+    public static Quaternion NormalizeQuaternion(Quaternion q)
+    {
+        float x = q.x;
+        float y = q.y;
+        float z = q.z;
+        float w = q.w;
+        float d = q.w * q.w + q.x * q.x + q.y * q.y * q.z * q.z;
+
+        if (d == 0)
+        {
+            w = 1.0f;
+        }
+
+        d = 1.0f / Mathf.Sqrt(d);
+
+        if (d > 0.00000001f)
+        {
+            x *= d;
+            y *= d;
+            z *= d;
+            w *= d;
+        }
+
+        return new Quaternion(x, y, z, w);
+    }
 }
 
 public struct Transform

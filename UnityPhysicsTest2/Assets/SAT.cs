@@ -23,7 +23,7 @@ public class SAT
 {
     public static bool OBoxToOBox(ref Manifold m, ref Box A, ref Box B)
     {
-        m.contacts_ = new Contact[8];
+        m.contacts_ = new Contact[16];
 
         Mat3 A_rotation = A.transform_.rotation_;
         Mat3 B_rotation = B.transform_.rotation_;
@@ -148,13 +148,15 @@ public class SAT
         Vector3 extent = Vector3.zero;
         ComputeReferenceEdgesAndBasis(reference_extent, reference_transform, normal, axis, ref clip_edges, ref basis, ref extent);
 
-        Vector3[] vertices_out = new Vector3[8];
-        float[] depths = new float[8];
+        Vector3[] vertices_out = new Vector3[16];
+        float[] depths = new float[16];
         int outNum;
         outNum = Clip(reference_transform.position_, extent, ref clip_edges, basis, ref vertices, ref vertices_out, ref depths);
 
         if (outNum > 0)
         {
+            m.A = A;
+            m.B = B;
             m.contact_count_ = outNum;
             m.normal_ = flip ? -normal : normal;
 
@@ -165,8 +167,12 @@ public class SAT
                 c.penetration_ = depths[i];
                 m.contacts_[i] = c;
             }
+            return true;
         }
-        return true;
+        else
+        {
+            return false;
+        }
     }
 
     public static bool FaceAxis(ref int controlaxis, int axisindex, float s, ref float sMax, Vector3 normal, ref Vector3 axisnormal)
@@ -411,8 +417,8 @@ public class SAT
     {
         int inCount = 4;
         int outCount;
-        Vector3[] vertices_in = new Vector3[8];
-        Vector3[] vertices_out = new Vector3[8];
+        Vector3[] vertices_in = new Vector3[16];
+        Vector3[] vertices_out = new Vector3[16];
 
         for (int i = 0; i < 4; i++)
         {
