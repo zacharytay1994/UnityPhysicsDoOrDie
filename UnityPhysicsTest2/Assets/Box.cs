@@ -18,8 +18,8 @@ public class Box
     public float mass_;
     public float inv_mass_;
     public Mat3 inv_inertia_ = new Mat3();
-    public Vector3 force_;
-    public Vector3 torque_;
+    public Vector3 force_ = Vector3.zero;
+    public Vector3 torque_ = Vector3.zero;
 
     public Box(Vector3 extents, float mass)
     {

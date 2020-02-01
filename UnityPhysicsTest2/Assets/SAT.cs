@@ -50,7 +50,7 @@ public class SAT
         int bAxis = -1;
         Vector3 normalA = Vector3.zero;
         Vector3 normalB = Vector3.zero;
-
+        float test2 = Vector3.Dot(Abs_B_to_A_frame.GetColumn(0), B_extents);
         // face axis checks
         s = Mathf.Abs(vec_AB_in_A_frame.x) - (A_extents.x + Vector3.Dot(Abs_B_to_A_frame.GetColumn(0), B_extents));
         if (FaceAxis(ref aAxis, 0, s, ref aMax, A_rotation.x_, ref normalA))
@@ -255,7 +255,7 @@ public class SAT
 
     public static void ComputeReferenceEdgesAndBasis(Vector3 referenceextent, Transform referencetransform, Vector3 normal, int axis, ref int[] output, ref Mat3 basis, ref Vector3 extent)
     {
-        Vector3 rotatedN = referencetransform.rotation_.VMult(normal);
+        Vector3 rotatedN = referencetransform.rotation_.Transpose().VMult(normal);
 
         if (axis >= 3)
         {
@@ -390,7 +390,7 @@ public class SAT
             {
                 if (!(outCount < 8))
                 {
-                    Debug.Log("OUTPUT COUNT EXCEED!");
+                    //Debug.Log("OUTPUT COUNT EXCEED!");
                 }
                 verticesout[outCount] = b;
                 outCount++;
@@ -461,9 +461,9 @@ public class SAT
                 outCount++;
             }
         }
-        if (outCount > 8)
+        if (outCount > 16)
         {
-            Debug.Log("OUTCOUNT > 8");
+            Debug.Log("OUTCOUNT > 16");
         }
         return outCount;
     }

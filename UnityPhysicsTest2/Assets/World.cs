@@ -14,6 +14,16 @@ public class World : MonoBehaviour
     [SerializeField]
     GameObject parent_cube_;
 
+    Vector3 pos = new Vector3(3.0f, 0.5f, -3.0f);
+    Vector3 pos1 = new Vector3(-3.0f, 1.5f, -3.0f);
+    Vector3 pos2 = new Vector3(3.0f, 2.0f, 3.0f);
+    Vector3 pos3 = new Vector3(-3.0f, 2.5f, 3.0f);
+
+    float timer_ = 0.2f;
+    float counter_ = 0.0f;
+    float index_ = 0;
+    float index_counter_ = 0;
+
     List<Cube> cube_list_ = new List<Cube>();
     List<Manifold> manifold_list_ = new List<Manifold>();
     // Start is called before the first frame update
@@ -27,10 +37,50 @@ public class World : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.B))
+        if (counter_ > timer_)
         {
-            AddCube(new Vector3(Random.Range(-5.0f, 5.0f), 5.0f, Random.Range(-5.0f, 5.0f)));
+            if (index_ < 10)
+            {
+                switch (index_counter_ % 4)
+                {
+                    case 0:
+                        AddCube(pos);
+                        pos.y += 1.0f;
+                        index_++;
+                        break;
+                    case 1:
+                        AddCube(pos1);
+                        pos1.y += 1.0f;
+                        break;
+                    case 2:
+                        AddCube(pos2);
+                        pos2.y += 1.0f;
+                        break;
+                    case 3:
+                        AddCube(pos3);
+                        pos3.y += 1.0f;
+                        break;
+                }
+                index_counter_++;
+            }
+            else
+            {
+                timer_ = 0.1f;
+                AddCube(new Vector3(Random.Range(-5.0f, 5.0f), 5.0f, Random.Range(-5.0f, 5.0f)));
+                index_++;
+            }
+            counter_ = 0.0f;
         }
+        else
+        {
+            counter_ += Time.deltaTime;
+        }
+        //if (Input.GetKeyDown(KeyCode.B))
+        //{
+        //    AddCube(new Vector3(Random.Range(-5.0f, 5.0f), 5.0f, Random.Range(-5.0f, 5.0f)));
+        //    //AddCube(pos);
+        //    //pos.y += 1.0f;
+        //}
         //if (cube1 != null || cube2 != null)
         //{
         //    Box b1 = cube1.GetComponent<Cube>().box_;
@@ -74,7 +124,12 @@ public class World : MonoBehaviour
         }
         IntegrateCubeVelocities();
         TestAllCubes();
-        PreSolveSolve();
+        for (int iter = 0; iter < 10; iter++)
+        {
+            PreSolveSolve();
+        }
+        //TestAllCubes();
+        //PreSolveSolve();
         IntegrateCubeForces();
     }
 
